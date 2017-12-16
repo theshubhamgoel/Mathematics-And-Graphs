@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Circular Modular Addition and Multiplication</title>
+<link rel="stylesheet" type="text/css" href="AllCss/some.css">
+<!--
+-->
+</head>
+<body>
+	<h2 align="center">Modular Multiplication Around a Circle</h2>
+	<hr>
+	<table align="center">
+		<tr align="center">
+			<td><h3 id="numberOfpointsh3">Number of Points = 100</h3></td>
+			<td><h3 id="multiplierh3">Multiplier = 5</h3></td>
+		</tr>
+		<tr align="center">
+			<td><input id="numberOfPointSlider" type="range" min="1"
+				max="500" value="200"></td>
+			<td><input id="multiplierSlider" type="range" min="0" max="500"
+				value="6"></td>
+		</tr>
+
+
+	</table>
+	<canvas id="myCanvas" width="600" height="600"></canvas>
+	<script src="AllJS/basic.js"></script>
+	<script>
+		// Get canvas and set some properties
+		var canvas = document.getElementById('myCanvas');
+		var min = Math.min(getScreenHeight(), getScreenWidth())
+		canvas.width = min;
+		canvas.height = min;
+		var context = canvas.getContext('2d');
+
+		var numberOfPointSlider = document
+				.getElementById("numberOfPointSlider");
+		var multiplierSlider = document.getElementById("multiplierSlider");
+
+		//circle properties
+		var centerX = canvas.width / 2;
+		var centerY = canvas.height / 2;
+		var radius = min * 9 / 20;
+
+		function updateCanvas() {
+			//draw circle
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			drawCircle();
+			dwawPointsOnCircle();
+		}
+
+		function drawCircle() {
+			context.beginPath();
+			context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+			context.lineWidth = 2;
+			context.stroke();
+		}
+
+		function dwawPointsOnCircle() {
+			var numberOFPonit = numberOfPointSlider.value;
+			var multipleBy = multiplierSlider.value;
+			var multiplier = multiplierSlider.value;
+			for (i = 0; i < numberOFPonit; i++) {
+				var angle = i * (360 / numberOFPonit);
+				var x = centerX + radius * Math.cos(-angle * Math.PI / 180);
+				var y = centerY + radius * Math.sin(-angle * Math.PI / 180);
+
+				var nextI = (i * multipleBy) % numberOFPonit;
+				var nextAngle = nextI * (360 / numberOFPonit);
+				var nextX = centerX + radius
+						* Math.cos(-nextAngle * Math.PI / 180);
+				var nextY = centerY + radius
+						* Math.sin(-nextAngle * Math.PI / 180);
+
+				context.beginPath();
+				context.arc(x, y, 4, 0, 2 * Math.PI);
+				context.fill();
+				context.fillText("", x + 10, y);
+
+				context.beginPath();
+				context.moveTo(x, y);
+				context.lineTo(nextX, nextY);
+				context.stroke();
+			}
+		}
+
+		//add listner
+		numberOfPointSlider.oninput = function() {
+			var numberOfpointsh3 = document.getElementById("numberOfpointsh3");
+			numberOfpointsh3.innerHTML = "Number of Points = "
+					+ numberOfPointSlider.value;
+			updateCanvas();
+		}
+
+		multiplierSlider.oninput = function() {
+			var multiplierh3 = document.getElementById("multiplierh3");
+			multiplierh3.innerHTML = "Multiplier = " + multiplierSlider.value;
+			updateCanvas();
+		}
+
+		updateCanvas();
+	</script>
+
+	<h2 align="center">Ha Bhai Ha Bhai</h2>
+</body>
+</html>

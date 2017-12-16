@@ -1,0 +1,13 @@
+input[type="range"] {
+	width: 70%;
+}
+
+table {
+	table-layout: fixed;
+	width: 70%
+}
+
+canvas {
+	display: block;
+	margin: 0 auto;
+}
