@@ -3,8 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <title>Tick Tack Toe</title>
+<link rel="stylesheet" type="text/css" href="AllCss/some.css">
 </head>
 <body>
+	<h2 align="center">Tick Tack Toe</h2>
+	<hr>
+
+	<canvas id="tictacktoeCanvas" width="400" height="400"></canvas>
+	<table align="center" style="width: 50%">
+		<tr align="center">
+			<td><h3>PLAYER</h3></td>
+			<td><h3>TIES</h3></td>
+			<td><h3>BOT</h3></td>
+		</tr>
+		<tr align="center">
+			<td><h3 id="playerScore">0</h3></td>
+			<td><h3 id="ties">0</h3></td>
+			<td><h3 id="botScore">0</h3></td>
+		</tr>
+	</table>
+	<script src="AllJS/basic.js"></script>
+
+	<script>
+		// Get canvas and set some properties
+		var canvas = document.getElementById('tictacktoeCanvas');
+		var margin = 20;
+		var min = Math.min(getScreenHeight(), getScreenWidth());
+		min = min * 2 / 3 + margin;
+		var cellSize = (min-2*margin)/3;
+		var fontSize = cellSize*4/5;
+		
+		canvas.width = min;
+		canvas.height = min;
+		var ctx = canvas.getContext('2d');
+
+		var playerScore = document.getElementById("playerScore");
+		var ties = document.getElementById("ties");
+		var botScore = document.getElementById("botScore");
+
+		function updateCanvas(){
+			ctx.fillStyle = "black";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			createBoundary();
+		}
+		
+		//create matrix
+		function drawLine(fromX, fromY, toX, toY, strokeStyle='#FFFFFF',lineWidth = 5){
+			ctx.beginPath();
+			ctx.moveTo(fromX, fromY);
+			ctx.strokeStyle = strokeStyle;
+			ctx.lineWidth=lineWidth;
+			ctx.lineTo(toX, toY);
+			ctx.stroke();
+		};
+		
+		function createBoundary(){
+			drawLine(min/3,margin,min/3,min-margin);
+			drawLine(min*2/3,margin,min*2/3,min-margin);
+			drawLine(margin,min/3-10,min-10,min/3-10);
+			drawLine(margin,min*2/3-10,min-10,min*2/3-10);
+		}
+		
+		function addText(text,x,y,font="40px Comic Sans MS",color="#FFFFFF"){
+			ctx.font = font;
+			ctx.fillStyle = color;
+			ctx.textAlign = "center";
+			ctx.fillText(text, x, y); 
+		}
+		
+		updateCanvas();
+		addText("X",min/2,min/2+fontSize/4,fontSize + "px Comic Sans MS");
+		
+	</script>
 
 </body>
 </html>
