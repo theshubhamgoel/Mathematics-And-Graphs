@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <title>Tick Tack Toe</title>
 <link rel="stylesheet" type="text/css" href="AllCss/some.css">
 </head>
+
 <body>
 	<h2 align="center">Tick Tack Toe</h2>
 	<hr>
@@ -12,69 +14,214 @@
 	<canvas id="tictacktoeCanvas" width="400" height="400"></canvas>
 	<table align="center" style="width: 50%">
 		<tr align="center">
-			<td><h3>PLAYER</h3></td>
-			<td><h3>TIES</h3></td>
-			<td><h3>BOT</h3></td>
+			<td>
+				<h3>PLAYER</h3>
+			</td>
+			<td>
+				<h3>TIES</h3>
+			</td>
+			<td>
+				<h3>BOT</h3>
+			</td>
 		</tr>
 		<tr align="center">
-			<td><h3 id="playerScore">0</h3></td>
-			<td><h3 id="ties">0</h3></td>
-			<td><h3 id="botScore">0</h3></td>
+			<td>
+				<h3 id="playerScore">0</h3>
+			</td>
+			<td>
+				<h3 id="ties">0</h3>
+			</td>
+			<td>
+				<h3 id="botScore">0</h3>
+			</td>
 		</tr>
 	</table>
 	<script src="AllJS/basic.js"></script>
 
 	<script>
-		// Get canvas and set some properties
-		var canvas = document.getElementById('tictacktoeCanvas');
-		var margin = 20;
-		var min = Math.min(getScreenHeight(), getScreenWidth());
-		min = min * 2 / 3 + margin;
-		var cellSize = (min-2*margin)/3;
-		var fontSize = cellSize*4/5;
-		
-		canvas.width = min;
-		canvas.height = min;
-		var ctx = canvas.getContext('2d');
+        // Get canvas and set some properties
+        var canvas = document.getElementById('tictacktoeCanvas');
+        var margin = 20;
+        var min = Math.min(getScreenHeight(), getScreenWidth());
+        min = min * 2 / 3 + margin;
+        var cellSize = (min - 2 * margin) / 3;
+        var fontSize = cellSize * 4 / 5;
 
-		var playerScore = document.getElementById("playerScore");
-		var ties = document.getElementById("ties");
-		var botScore = document.getElementById("botScore");
+        canvas.width = min;
+        canvas.height = min;
+        var ctx = canvas.getContext('2d');
 
-		function updateCanvas(){
-			ctx.fillStyle = "black";
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-			createBoundary();
-		}
-		
-		//create matrix
-		function drawLine(fromX, fromY, toX, toY, strokeStyle='#FFFFFF',lineWidth = 5){
-			ctx.beginPath();
-			ctx.moveTo(fromX, fromY);
-			ctx.strokeStyle = strokeStyle;
-			ctx.lineWidth=lineWidth;
-			ctx.lineTo(toX, toY);
-			ctx.stroke();
-		};
-		
-		function createBoundary(){
-			drawLine(min/3,margin,min/3,min-margin);
-			drawLine(min*2/3,margin,min*2/3,min-margin);
-			drawLine(margin,min/3-10,min-10,min/3-10);
-			drawLine(margin,min*2/3-10,min-10,min*2/3-10);
-		}
-		
-		function addText(text,x,y,font="40px Comic Sans MS",color="#FFFFFF"){
-			ctx.font = font;
-			ctx.fillStyle = color;
-			ctx.textAlign = "center";
-			ctx.fillText(text, x, y); 
-		}
-		
-		updateCanvas();
-		addText("X",min/2,min/2+fontSize/4,fontSize + "px Comic Sans MS");
-		
-	</script>
+        var playerScore = document.getElementById("playerScore");
+        var ties = document.getElementById("ties");
+        var botScore = document.getElementById("botScore");
+        var positionsX = new Array(9);
+        var positionsY = new Array(9);
+        var selectedIndex = new Array(9);
+
+        function generateAllPossiblePosition() {
+            positionsX[0] = positionsX[3] = positionsX[6] = min / 3 - cellSize / 2;
+            positionsX[1] = positionsX[4] = positionsX[7] = min / 2;
+            positionsX[2] = positionsX[5] = positionsX[8] = min * 2 / 3 + cellSize / 2;
+
+            positionsY[0] = positionsY[1] = positionsY[2] = min / 3 - cellSize / 2 + fontSize / 4;
+            positionsY[3] = positionsY[4] = positionsY[5] = min / 2 + fontSize / 4;
+            positionsY[6] = positionsY[7] = positionsY[8] = min * 2 / 3 + cellSize / 2 + fontSize / 4;
+        }
+
+        function updateCanvas() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            createBoundary();
+            drawMoves();
+        }
+
+        function drawMoves() {
+            for (i = 0; i < 9; i++) {
+                if (selectedIndex[i] === 1) {
+                    text = "0";
+                } else if (selectedIndex[i] === 2) {
+                    text = "X";
+                } else {
+                    continue;
+                }
+                addText(text, positionsX[i], positionsY[i], fontSize + "px Comic Sans MS");
+            }
+        }
+
+        //create matrix
+        function drawLine(fromX, fromY, toX, toY, strokeStyle = '#FFFFFF', lineWidth = 5) {
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.strokeStyle = strokeStyle;
+            ctx.lineWidth = lineWidth;
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+        };
+
+        function createBoundary() {
+            drawLine(min / 3, margin, min / 3, min - margin);
+            drawLine(min * 2 / 3, margin, min * 2 / 3, min - margin);
+            drawLine(margin, min / 3 - 10, min - 10, min / 3 - 10);
+            drawLine(margin, min * 2 / 3 - 10, min - 10, min * 2 / 3 - 10);
+        }
+
+        function addText(text, x, y, font = "40px Comic Sans MS", color = "#FFFFFF") {
+            ctx.font = font;
+            ctx.fillStyle = color;
+            ctx.textAlign = "center";
+            ctx.fillText(text, x, y);
+        }
+
+        function getNearestCell(position) {
+            var index = 0;
+            var min = 100000;
+            for (i = 0; i < 10; i++) {
+                var distance = Math.sqrt(Math.pow(position.x - positionsX[i], 2) + Math.pow(position.y - positionsY[i] + fontSize / 4, 2));
+                if (distance < min) {
+                    index = i;
+                    min = distance;
+                }
+            }
+
+            return index
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Get the position of the mouse relative to the canvas
+        function getMousePos(canvasDom, mouseEvent) {
+            var rect = canvasDom.getBoundingClientRect();
+            return {
+                x: mouseEvent.clientX - rect.left,
+                y: mouseEvent.clientY - rect.top
+            };
+        }
+
+        canvas.addEventListener("mouseup", function(e) {
+            lastPos = getMousePos(canvas, e);
+            var index = getNearestCell(lastPos);
+
+            if (isCanvasUpdating || isGameOver()) {
+                //do nothing
+            } else if (selectedIndex[index] === undefined) {
+                selectedIndex[index] = 1;
+                console.log("Player move : " + index);
+                updateCanvas();
+
+                //update bot move
+                while (!isGameOver()) {
+                    index = getRandomInt(0, 8);
+                    if (selectedIndex[index] === undefined) {
+                        isCanvasUpdating = true;
+                        setTimeout(function() {
+                            console.log("Bot move : " + index);
+                            selectedIndex[index] = 2;
+                            updateCanvas();
+                            isCanvasUpdating = false;
+                        }, 800);
+                        break;
+                    }
+                }
+            }
+            
+            if(winner!=0){
+	        		console.log("Winner : "+winner);
+	        		winner = -1;
+            }
+
+        }, false);
+
+        function isGameOver() {
+            if (checkForWinnerStatus(1)) {
+            		winner = 1;
+            } else if (checkForWinnerStatus(2)) {
+            		winner = 2;
+            } else {
+            		winner = 0
+            }
+
+            if(winner != 0 ){
+	            	console.log("Game Over");
+	    	        gameOver = true;
+            		return true;
+            }
+	        for (i = 0; i < 9; i++) {
+	            if (selectedIndex[i] === undefined)
+	                return false;
+	        }
+	        console.log("Game Over");
+	        gameOver = true;
+	        return true;
+        }
+
+        function checkForWinnerStatus(id) {
+            if ((selectedIndex[0] == id && selectedIndex[1] == id && selectedIndex[2] == id) ||
+                (selectedIndex[3] == id && selectedIndex[4] == id && selectedIndex[5] == id) ||
+                (selectedIndex[6] == id && selectedIndex[7] == id && selectedIndex[8] == id) ||
+                (selectedIndex[0] == id && selectedIndex[3] == id && selectedIndex[6] == id) ||
+                (selectedIndex[1] == id && selectedIndex[4] == id && selectedIndex[7] == id) ||
+                (selectedIndex[2] == id && selectedIndex[5] == id && selectedIndex[8] == id) ||
+                (selectedIndex[0] == id && selectedIndex[4] == id && selectedIndex[8] == id) ||
+                (selectedIndex[2] == id && selectedIndex[4] == id && selectedIndex[6] == id)) {
+
+                return true;
+            }
+            return false;
+        }
+
+        function startGame() {
+            isCanvasUpdating = false;
+            gameOver = false;
+        		winner = 0;
+            generateAllPossiblePosition();
+            updateCanvas();
+        };
+
+        startGame();
+    </script>
 
 </body>
+
 </html>
