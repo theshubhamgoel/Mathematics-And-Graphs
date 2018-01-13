@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <title>Snake and Ladders</title>
+      <link rel="stylesheet" type="text/css" href="AllCss/some.css?v=1.1.1">
+   </head>
+   <body>
+      <h2 align="center">Snake and Ladders</h2>
+      <hr>
+      <script src="AllJS/basic.js"></script>
+      <table align="center" style="width: 40%">
+         <tr align="center">
+            <td>
+               <h3>PLAYER</h3>
+            </td>
+            <td>
+               <h3>BOT</h3>
+            </td>
+            <td>
+               <button class="rollTheDiceButton" onclick = "showMessage('Hello Sir!','50%')" >Roll the Dice</button>
+            </td>
+         </tr>
+         <tr align="center">
+            <td>
+               <canvas id="playerCanvas" width="40" height="40">
+            </td>
+            <td>
+               <canvas id="botCanvas" width="40" height="40">
+            </td>
+            <td>
+               <img src="images/dice.png" />
+            </td>
+         </tr>
+      </table>
+      <canvas id="board" width="500" height="500"></canvas>
+      
+      <div id="snackbar">Some text some message..</div>
+      <script>
+		function showMessage(message) {
+		    var x = document.getElementById("snackbar");
+		    x.className = "show";
+		    x.innerHTML = message;
+		    //x.style.bottom ="50%"
+		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+		}
+	  </script>
+	  
+      <script>
+         // Get canvas and set some properties
+         var canvas = document.getElementById("board");
+         var min = Math.min(getScreenHeight(), getScreenWidth())-20;
+         canvas.width = min;
+         canvas.height = min;
+         var ctx = canvas.getContext('2d');
+         var offset = min/20;
+         var cellSize = min/10;
+         var playerColor = "#2f65bc";
+         var botColor = "#d6a528"
+         
+         function setPlayerColor(id,color){
+         	var gottiCanvas = document.getElementById(id);
+         	gottiCanvas.width = cellSize;
+         	gottiCanvas.height = cellSize;
+         	var ctx = gottiCanvas.getContext('2d');
+         	drawArc(offset,offset,cellSize/4,0,2 * Math.PI, ctx, color);
+         }
+         
+         setPlayerColor("playerCanvas",playerColor);
+         setPlayerColor("botCanvas",botColor);
+         
+         //set background
+         var background = new Image();
+         background.src = "images/boardbackground.png";
+         background.onload = function() {
+         	ctx.drawImage(background, 0, 0, min, min);
+         	drawPlayer(0,9,playerColor);
+         	//drawPlayer(1,9,botColor);
+         }
+         
+         function drawPlayer(row, col, color, radius = cellSize/4){
+         	drawArc(row * cellSize + offset, col * cellSize + offset, radius, 0, 2 * Math.PI, ctx, color);
+         }
+         
+         function drawArc(centerX,centerY,radius,startAngle,endAngle,ctx,color){
+         	ctx.beginPath();
+         	ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
+         	ctx.fillStyle = color;
+         	ctx.fill();
+         	ctx.lineWidth = 4;
+         	ctx.strokeStyle = '#003300';
+         	ctx.stroke();
+         }
+         
+         function startGame() {
+         	ctx.drawImage(background, 0, 0, min, min);
+         };
+         
+         startGame();
+      </script>
+   </body>
+</html>
