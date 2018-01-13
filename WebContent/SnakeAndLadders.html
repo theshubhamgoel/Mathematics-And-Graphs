@@ -12,13 +12,13 @@
       <table align="center" style="width: 40%">
          <tr align="center">
             <td>
-               <h3>PLAYER</h3>
+               <h3>YOU</h3>
             </td>
             <td>
                <h3>BOT</h3>
             </td>
             <td>
-               <button class="rollTheDiceButton" onclick = "showMessage('Hello Sir!','50%')" >Roll the Dice</button>
+               <button id="diceButton" class="rollTheDiceButton" onclick = "rolltheDice('Hello Sir!','50%')" disabled >Roll the Dice</button>
             </td>
          </tr>
          <tr align="center">
@@ -37,16 +37,7 @@
       
       <div id="snackbar">Some text some message..</div>
       <script>
-		function showMessage(message) {
-		    var x = document.getElementById("snackbar");
-		    x.className = "show";
-		    x.innerHTML = message;
-		    //x.style.bottom ="50%"
-		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-		}
-	  </script>
-	  
-      <script>
+		
          // Get canvas and set some properties
          var canvas = document.getElementById("board");
          var min = Math.min(getScreenHeight(), getScreenWidth())-20;
@@ -58,6 +49,9 @@
          var playerColor = "#2f65bc";
          var botColor = "#d6a528"
          
+        	 setPlayerColor("playerCanvas",playerColor);
+         setPlayerColor("botCanvas",botColor);
+         
          function setPlayerColor(id,color){
          	var gottiCanvas = document.getElementById(id);
          	gottiCanvas.width = cellSize;
@@ -66,18 +60,34 @@
          	drawArc(offset,offset,cellSize/4,0,2 * Math.PI, ctx, color);
          }
          
-         setPlayerColor("playerCanvas",playerColor);
-         setPlayerColor("botCanvas",botColor);
+         function showMessage(message) {
+ 		    var x = document.getElementById("snackbar");
+ 		    x.className = "show";
+ 		    x.innerHTML = message;
+ 		    //x.style.bottom ="50%"
+ 		    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+ 		}
+
+ 		function rolltheDice(message, bottomStyle){
+ 			ctx.drawImage(background, 0, 0, min, min);
+ 			var diceValue = Math.floor((Math.random() * 6) + 1);
+ 			showMessage("Dice : " + diceValue)
+ 			playerPostion += diceValue
+ 			movePlayer(playerPostion, playerColor);
+ 			botPosition += Math.floor((Math.random() * 6) + 1);
+ 			movePlayer(botPosition, botColor);
+ 			
+ 			console.log(playerPostion+"  "+ botPosition);
+ 		}
          
-         //set background
-         var background = new Image();
-         background.src = "images/boardbackground.png";
-         background.onload = function() {
-         	ctx.drawImage(background, 0, 0, min, min);
-         	drawPlayer(0,9,playerColor);
-         	//drawPlayer(1,9,botColor);
-         }
-         
+ 		function movePlayer(to, who){
+ 			x = (to+1)%20<11?to%10-1:10-to%10;
+ 			x = x<0 ? x+1:x;
+ 			x = x>9 ? x-1:x;
+ 			y = Math.floor( 10-to/10 );
+ 			drawPlayer(x,y,who);
+ 		}
+ 		
          function drawPlayer(row, col, color, radius = cellSize/4){
          	drawArc(row * cellSize + offset, col * cellSize + offset, radius, 0, 2 * Math.PI, ctx, color);
          }
@@ -92,8 +102,29 @@
          	ctx.stroke();
          }
          
+         function initizlizePlayerAndBot(){
+        	 	playerPostion = 1;
+        	 	botPosition = 1;
+         }
+         
+         function initializeUI(){
+             
+             //set background
+             background = new Image();
+             background.src = "images/boardbackground.png";
+             background.onload = function() {
+             	ctx.drawImage(background, 0, 0, min, min);
+             	drawPlayer(0,9,playerColor);
+             	//drawPlayer(1,9,botColor);
+             	
+             	 var diceButton = document.getElementById("diceButton");
+             	 diceButton.disabled = false;
+             }
+         }
+         
          function startGame() {
-         	ctx.drawImage(background, 0, 0, min, min);
+        	 	initializeUI();
+         	initizlizePlayerAndBot();
          };
          
          startGame();
