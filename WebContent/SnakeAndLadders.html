@@ -76,6 +76,17 @@
                         //Bot
                         diceValue = Math.floor((Math.random() * 5) + 1);
                         botPosition += diceValue;
+                        
+                        winner = checkForWin(botPosition, diceValue);
+	            			if(winner){
+	            				refreshBoard();
+	            				showMessage("Oops, Computer Won!  ", "snackbar2", true, false);
+	            				return;
+	            			}
+	            			
+	            			if(botPosition > 100){
+	            				botPosition -= diceValue;
+	            			} 
                         botPosition = getUpdatedPosition(botPosition, saap);
                         botPosition = getUpdatedPosition(botPosition, seedi);
                         if (playerPostion == botPosition) {
@@ -95,7 +106,16 @@
             var diceValue = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
             playerPostion += diceValue;
             
-            if( diceValue == 6){
+			winner = checkForWin(playerPostion, diceValue);
+			if(winner){
+				refreshBoard();
+				showMessage("Congratulations, Your Won", "snackbar1", true, false);
+				return;
+			}
+			
+			if(playerPostion > 100){
+				playerPostion -= diceValue;
+			} else if( diceValue == 6){
         			showMessage("Your got : " + diceValue, "snackbar1", false, false);
         			return;
         		} else{
@@ -111,6 +131,14 @@
             refreshBoard();
             	showMessage("Your got  : " + diceValue, "snackbar1", true, true);
         }
+        
+        function checkForWin(position, value){
+        		if(position==100 && value!=6){
+        			return true;
+        		}
+        		return false;
+        }
+        
 
         function getUpdatedPosition(position, arr){
     			for(i = 0; i< arr.length; i++){
