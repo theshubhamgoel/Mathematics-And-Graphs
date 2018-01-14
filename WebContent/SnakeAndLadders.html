@@ -41,7 +41,11 @@
 	<script>
         // Get canvas and set some properties
         var canvas = document.getElementById("board");
+        
         var min = Math.min(getScreenHeight(), getScreenWidth()) - 20;
+        if(getScreenHeight() < getScreenWidth()){
+    			min -=min/5;
+        }
         canvas.width = min;
         canvas.height = min;
         var ctx = canvas.getContext('2d');
@@ -116,7 +120,7 @@
 			if(playerPostion > 100){
 				playerPostion -= diceValue;
 			} else if( diceValue == 6){
-        			showMessage("Your got : " + diceValue, "snackbar1", false, false);
+        			showMessage("Your got : 6 Roll It Agian", "snackbar1", false, false);
         			return;
         		} else{
         			//
